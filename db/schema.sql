@@ -1,0 +1,11 @@
+CREATE TABLE item (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  item_name VARCHAR
+);
+
+CREATE TABLE images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  img_url VARCHAR,
+  item_id INTEGER,
+  FOREIGN KEY (item_id) REFERENCES item(id)
+);
