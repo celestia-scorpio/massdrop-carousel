@@ -1,5 +1,6 @@
 const app = require('./app.js')
+var port = process.env.PORT || 3007
 
-app.listen(3001, () => console.log('server is listening on port 3001'))
+app.listen(port, () => console.log(`server is listening on port ${port}`))
 
 module.exports = app;
