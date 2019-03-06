@@ -1,3 +1,11 @@
+const { Client } = require('pg')
+const client = new Client()
+
+await client.connect()
+
+
+
+/*
 var helpers = {
   imagePush: function() {
     var images = []
@@ -18,3 +26,4 @@ var helpers = {
 }
 
 module.exports = helpers;
+*/

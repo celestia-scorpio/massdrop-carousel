@@ -1,3 +1,67 @@
+
+
+// const { Pool } = require('pg')
+// const configVars = require('./configVars')
+// /var/lib/postgresql/10/main data directory
+/*
+const Promise = require('bluebird')
+const initOptions = {promiseLib: Promise, capSQL: true}
+const pgp = require('pg-promise')(initOptions)
+const configVars = require('./configVars')
+
+const cn = {
+  host: configVars.host || 'localhost',
+  port: configVars.port || 5432,
+  database: configVars.database || 'SDC_pictures',
+  user: configVars.user || 'postgres',
+  password: configVars.password || null
+}
+
+const db = pgp(cn)
+
+db.task(t => {
+  return t.batch([
+      t.one('insert into users(name) values($1) returning id', 'John'),
+      t.one('insert into events(code) values($1) returning id', 123)
+  ]);
+})
+  .then(([user, event]) => {
+      // print new user id + new event id;
+      console.log('DATA:', user.id, event.id)
+  })
+  .catch(error => {
+      console.log('ERROR:', error)
+  })
+  .finally(db.$pool.end)
+*/
+/*
+let user = configVars.user || process.env.USER || 'ross'
+let host = configVars.host || 'localhost'
+let database = configVars.database || process.env.USER 
+let password = configVars.password || null
+let port = configVars.port || 5432
+
+const pool = new Pool({user, host, database, password, port})
+console.log('Pool:', pool)
+(async (() => {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    await client.query(`CREATE TABLE IF NOT EXISTS pics (urls JSONB);`)
+    await client.query(`COPY pics (urls) FROM PROGRAM 'node ./makeData.js' `)
+
+    await client.query('COMMIT')
+  } catch (e) {
+    await client.query('ROLLBACK')
+    throw e
+  } finally {
+    client.release()
+  }
+}))().catch(e => console.error(e.stack))
+*/
+/*
 const faker = require('faker');
 const {imagePush, generateRandomNumber} = require('./dataHelpers.js');
 const sqlite3 = require('sqlite3').verbose();
@@ -30,3 +94,4 @@ db.serialize(function() {
   }
   db.close();
 })
+*/

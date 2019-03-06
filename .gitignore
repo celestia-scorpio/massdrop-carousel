@@ -2,3 +2,5 @@ node_modules/
 /test/__snapshots__
 .babelrc
 enzyme.config.js
+configVars.js
+data.txt
