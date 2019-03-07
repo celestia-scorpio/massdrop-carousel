@@ -1,8 +1,44 @@
-
-
-// const { Pool } = require('pg')
-// const configVars = require('./configVars')
+const { Pool } = require('pg')
+const configVars = require('./configVars')
 // /var/lib/postgresql/10/main data directory
+
+let user = configVars.user || 'ross' // process.env.USER
+let host = configVars.host || 'localhost'
+let database = configVars.database || process.env.USER 
+let password = configVars.password || null
+let port = configVars.port || 5432
+let dataFP = configVars.dataFP || '/home/ross/Bootcamp/Galvanize/part2/SDC/massdrop-carousel/data.txt'
+
+
+console.log('USER:', user)
+const pool = new Pool({user, host, database, password, port})
+console.log('Pool:', pool)
+// pool.on('error', (err, client) => {
+//   console.error('Unexpected error on idle client', err)
+//   process.exit(-1)
+// })
+const seed = async () => {
+  console.log('waiting for pool to connect')
+  const client = await pool.connect()
+  console.log('client finished trying to connect')
+  try {
+    await client.query('BEGIN;')
+    console.log('beginning transaction')
+    await client.query(`CREATE TABLE IF NOT EXISTS pics (prod_id SERIAL PRIMARY KEY, urls JSONB);`)
+    await client.query(`TRUNCATE TABLE pics;`)
+    await client.query(`COPY pics (urls) FROM '${dataFP}';`)
+
+    await client.query('COMMIT;')
+  } catch (e) {
+    await client.query('ROLLBACK;')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
+seed().catch(e => console.error(e.stack))
+
 /*
 const Promise = require('bluebird')
 const initOptions = {promiseLib: Promise, capSQL: true}
@@ -35,31 +71,7 @@ db.task(t => {
   .finally(db.$pool.end)
 */
 /*
-let user = configVars.user || process.env.USER || 'ross'
-let host = configVars.host || 'localhost'
-let database = configVars.database || process.env.USER 
-let password = configVars.password || null
-let port = configVars.port || 5432
 
-const pool = new Pool({user, host, database, password, port})
-console.log('Pool:', pool)
-(async (() => {
-  const client = await pool.connect()
-
-  try {
-    await client.query('BEGIN')
-
-    await client.query(`CREATE TABLE IF NOT EXISTS pics (urls JSONB);`)
-    await client.query(`COPY pics (urls) FROM PROGRAM 'node ./makeData.js' `)
-
-    await client.query('COMMIT')
-  } catch (e) {
-    await client.query('ROLLBACK')
-    throw e
-  } finally {
-    client.release()
-  }
-}))().catch(e => console.error(e.stack))
 */
 /*
 const faker = require('faker');
