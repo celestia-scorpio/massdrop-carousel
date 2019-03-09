@@ -10,29 +10,23 @@ let password = configVars.password || null
 let port = configVars.port || 5432
 
 const seed = async (dataFP, worker) => {
-  console.log('waiting for pool to connect')
   const client = await pool.connect()
-  console.log('client finished trying to connect')
   try {
     await client.query('BEGIN;')
-    console.log('beginning transaction')
-    await client.query(`CREATE TABLE IF NOT EXISTS pics (prod_id SERIAL PRIMARY KEY, urls JSONB);`)
-    await client.query(`TRUNCATE TABLE pics;`)
     await client.query(`COPY pics (urls) FROM '${dataFP}';`)
-
     await client.query('COMMIT;')
   } catch (e) {
     await client.query('ROLLBACK;')
     throw e
   } finally {
-    worker.kill()
     client.release()
+    worker.kill()
   }
 }
 
-console.log('USER:', user)
+// console.log('USER:', user)
 const pool = new Pool({user, host, database, password, port})
-console.log('Pool:', pool)
+// console.log('Pool:', pool)
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err)
@@ -45,6 +39,22 @@ if (cluster.isMaster) {
   for (var i = 0; i < cpuCount; i += 1) {
       cluster.fork()
   }
+  async function makeTable() {
+    const client = await pool.connect()
+    // console.log('client finished trying to connect')
+    try {
+    await client.query('BEGIN;')
+    await client.query(`DROP TABLE pics;`)
+    await client.query(`CREATE TABLE pics (prod_id SERIAL PRIMARY KEY, urls JSONB);`)
+    await client.query('COMMIT;')
+    } catch (e) {
+      await client.query('ROLLBACK;')
+      throw e
+    } finally {
+      client.release()
+    }
+  }
+  makeTable()
 } else {
   const wkrId = cluster.worker.id
   console.log('worker id:', wkrId)
