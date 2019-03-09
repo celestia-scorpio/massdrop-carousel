@@ -1,5 +1,6 @@
 const { Pool } = require('pg')
 const configVars = require('./configVars')
+var cluster = require('cluster')
 // /var/lib/postgresql/10/main data directory
 
 let user = configVars.user || 'ross' // process.env.USER
@@ -7,17 +8,8 @@ let host = configVars.host || 'localhost'
 let database = configVars.database || process.env.USER 
 let password = configVars.password || null
 let port = configVars.port || 5432
-let dataFP = configVars.dataFP || '/home/ross/Bootcamp/Galvanize/part2/SDC/massdrop-carousel/data.txt'
 
-
-console.log('USER:', user)
-const pool = new Pool({user, host, database, password, port})
-console.log('Pool:', pool)
-// pool.on('error', (err, client) => {
-//   console.error('Unexpected error on idle client', err)
-//   process.exit(-1)
-// })
-const seed = async () => {
+const seed = async (dataFP, worker) => {
   console.log('waiting for pool to connect')
   const client = await pool.connect()
   console.log('client finished trying to connect')
@@ -33,12 +25,32 @@ const seed = async () => {
     await client.query('ROLLBACK;')
     throw e
   } finally {
+    worker.kill()
     client.release()
   }
 }
 
-seed().catch(e => console.error(e.stack))
+console.log('USER:', user)
+const pool = new Pool({user, host, database, password, port})
+console.log('Pool:', pool)
 
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
+
+if (cluster.isMaster) {
+  var cpuCount = require('os').cpus().length
+
+  for (var i = 0; i < cpuCount; i += 1) {
+      cluster.fork()
+  }
+} else {
+  const wkrId = cluster.worker.id
+  console.log('worker id:', wkrId)
+  
+  seed(`/home/ross/Bootcamp/Galvanize/part2/SDC/massdrop-carousel/data${wkrId}.txt`, cluster.worker).catch(e => console.error(e.stack))
+}
 /*
 const Promise = require('bluebird')
 const initOptions = {promiseLib: Promise, capSQL: true}
