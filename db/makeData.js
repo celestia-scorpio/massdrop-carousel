@@ -14,15 +14,16 @@ if (cluster.isMaster) {
 }
 
 function addData(writer, i) {
-    let images = []
-    let ok = true
-
-    for (let j = 0; j < Math.ceil(Math.random() * 10) + 7; j++) {
-      images.push(`https://s3.us-east-2.amazonaws.com/hr-sdc-massdrop-carousel/tech_product_images/pic${Math.ceil(Math.random() * 107)}.jpg`)
-    }
-
+  let ok = true
     do {
-      i--;
+      let images = []
+
+      for (let j = 0; j < Math.ceil(Math.random() * 10) + 7; j++) {
+        images.push(`https://s3.us-east-2.amazonaws.com/hr-sdc-massdrop-carousel/tech_product_images/pic${Math.ceil(Math.random() * 107)}.jpg`)
+      }
+
+      i--
+
       if (i === 0) {
         // last time!
         writer.write(JSON.stringify(images))

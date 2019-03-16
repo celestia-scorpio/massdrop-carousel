@@ -31,7 +31,7 @@ class ImageCarousel extends React.Component {
   renderCaptionImages() {
     var urls = this.props.urls;
     var storage = urls.map((item, index) => {
-      return <img onClick={this.handleSlides} className="caption-image" data-index={index} src={item.img_url}/>
+      return <img onClick={this.handleSlides} className="caption-image" data-index={index} src={item} key={index}/>
     })
     this.setState({captionImages: storage});
   }
@@ -40,7 +40,7 @@ class ImageCarousel extends React.Component {
     var storage = [];
     for (var i = 0; i < this.props.urls.length; i++) {
       var slide = (
-          <img className="image" data-index={i} src={this.props.urls[i].img_url}/>
+          <img className="image" key={i} data-index={i} src={this.props.urls[i] }/>
       )
       storage.push(slide);
     }
@@ -88,7 +88,8 @@ class ImageCarousel extends React.Component {
   render() {
     var index = parseInt(this.state.imgIndex) + 1
     return (
-      <React.Fragment>
+      // <React.Fragment>
+      <div>
         <div className="image-container">
           <div className="image-slide">
             {this.props.urls.length !== 0 ? this.state.storage : "Please wait.."}
@@ -100,7 +101,8 @@ class ImageCarousel extends React.Component {
         </div>
         <a className="prev" onKeyDown={this.handleSlides} onClick={this.handleSlides}>&#10094;</a>
         <a className="next" onKeyDown={this.handleSlides} onClick={this.handleSlides}>&#10095;</a>
-      </React.Fragment>
+      </div>
+      // </React.Fragment>
       );
   }
 }

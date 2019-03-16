@@ -15,7 +15,8 @@ import {BrowserRouter, Route} from 'react-router-dom';
 
 ReactDOM.render(
   <BrowserRouter>
-    <Route path="/products/:id" component={App}></Route>
+  {/*<Route path="/products/:id" component={App}></Route>*/}
+    <Route path="/:id" component={App}></Route>
   </BrowserRouter>, document.getElementById("carousel"));
 
 // renderToElements(app, document.getElementById("carousel"));

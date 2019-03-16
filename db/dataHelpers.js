@@ -1,3 +1,33 @@
+const { Pool } = require('pg')
+const connectionVars = {
+  user: 'ross', 
+  host: 'ec2-18-222-28-246.us-east-2.compute.amazonaws.com',
+  database: 'SDC_pictures', 
+  password: 'polywoggysudo', 
+  port: 5432
+}
+
+const pool = new Pool(connectionVars)
+
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle client', err)
+  process.exit(-1)
+})
+
+module.exports = {
+  getImages: async (id, res) => {
+    try {
+      const {rows} = await pool.query('SELECT * FROM pics WHERE prod_id = $1', [id])
+      res.send(rows)
+    } catch (e) {
+      console.log(e)
+      res.sendStatus(404)
+    } 
+  }
+}
+
+
+
 /*
 var helpers = {
   imagePush: function() {

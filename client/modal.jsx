@@ -22,7 +22,7 @@ class Modal extends React.Component {
           <div className="search-icon">
             <span className="fa fa-search"></span>
           </div>
-          <img className="modal-portal" src={this.props.urls[0].img_url}/>
+          <img className="modal-portal" src={this.props.urls[0]/*.img_url*/}/>
         </div>
       </div>
     );

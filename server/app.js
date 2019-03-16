@@ -3,11 +3,11 @@ const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const db = require('../db/dataHelpers')
+// const sqlite3 = require('sqlite3').verbose();
+// var db = new sqlite3.Database('./db/carousel.db');
 
-var db = new sqlite3.Database('./db/carousel.db');
-
-var app = express();
+const app = express();
 
 app.use(compression());
 app.use(cors());
@@ -23,7 +23,9 @@ app.get('*.js', function (req, res, next) {
 
 app.use(express.static('public'))
 
-app.get('/api/item/:item_id/', function (req, res) {
+app.get('/api/item/:item_id/', function (req, res, next) {
+  db.getImages(req.params.item_id, res)
+  /*
   var {item_id} = req.params;
   db.all('SELECT img_url FROM images WHERE item_id=?', item_id, function(err, data) {
     if (err) {
@@ -31,8 +33,17 @@ app.get('/api/item/:item_id/', function (req, res) {
     }
     res.send(data);
   })
+  */
 })
 
+app.get('/*', (req, res) => {
+  //send a response that includes html
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+})
+
+module.exports = app;
+
+/*
 app.get('/api/info/:item_id/', function (req, res) {
   var {item_id} = req.params;
   db.all('SELECT isMassdropMade FROM item WHERE item_id=?', item_id, function(err, data) {
@@ -41,11 +52,4 @@ app.get('/api/info/:item_id/', function (req, res) {
     }
     res.send(data);
   })
-})
-
-app.get('*', (req, res) => {
-  //send a response that includes html
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-})
-
-module.exports = app;
+})*/

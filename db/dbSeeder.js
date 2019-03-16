@@ -61,40 +61,7 @@ if (cluster.isMaster) {
   
   seed(`/home/ross/Bootcamp/Galvanize/part2/SDC/massdrop-carousel/data${wkrId}.txt`, cluster.worker).catch(e => console.error(e.stack))
 }
-/*
-const Promise = require('bluebird')
-const initOptions = {promiseLib: Promise, capSQL: true}
-const pgp = require('pg-promise')(initOptions)
-const configVars = require('./configVars')
 
-const cn = {
-  host: configVars.host || 'localhost',
-  port: configVars.port || 5432,
-  database: configVars.database || 'SDC_pictures',
-  user: configVars.user || 'postgres',
-  password: configVars.password || null
-}
-
-const db = pgp(cn)
-
-db.task(t => {
-  return t.batch([
-      t.one('insert into users(name) values($1) returning id', 'John'),
-      t.one('insert into events(code) values($1) returning id', 123)
-  ]);
-})
-  .then(([user, event]) => {
-      // print new user id + new event id;
-      console.log('DATA:', user.id, event.id)
-  })
-  .catch(error => {
-      console.log('ERROR:', error)
-  })
-  .finally(db.$pool.end)
-*/
-/*
-
-*/
 /*
 const faker = require('faker');
 const {imagePush, generateRandomNumber} = require('./dataHelpers.js');
