@@ -1,7 +1,7 @@
 const express = require('express');
 const compression = require('compression');
 const cors = require('cors');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const path = require('path');
 const db = require('../db/dataHelpers')
 // const sqlite3 = require('sqlite3').verbose();
@@ -11,10 +11,9 @@ const app = express();
 
 app.use(compression());
 app.use(cors());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 
 app.get('*.js', function (req, res, next) {
-  console.log('js requested')
   req.url = req.url + '.gz';
   res.set('Content-Encoding', 'gzip');
   res.set('Content-Type', 'text/javascript');
@@ -39,6 +38,10 @@ app.get('/api/item/:item_id/', function (req, res, next) {
 app.get('/*', (req, res) => {
   //send a response that includes html
   res.sendFile(path.join(__dirname, '../public/index.html'));
+})
+
+app.get('/loaderio-8f5b5940f2b67f5e77374713272da00f/', (req, res) => {
+  res.sendFile(path.join(__dirname, './loaderVerification.txt'))
 })
 
 module.exports = app;

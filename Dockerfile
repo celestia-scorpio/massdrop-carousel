@@ -5,20 +5,20 @@ FROM node:10
 WORKDIR /app
 
 # Copy the server directory contents into the container at /app
-COPY ../ /app
+COPY . /app
 
 # Install any needed packages specified in 
 RUN npm i
 
 # Make port 80 available to the world outside this container
-#EXPOSE 80
+EXPOSE 3007
 
 # Set proxy server, replace host:port with values for your servers
 #ENV http_proxy host:port
 #ENV https_proxy host:port
 
 # Define environment variable
-ENV NAME World
+#ENV NAME World
 
-# Run app.py when the container launches
-CMD ["npm", ""]
+# Run when container launches
+CMD ["node", "server/server.js"]

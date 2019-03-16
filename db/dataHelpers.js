@@ -7,6 +7,8 @@ const connectionVars = {
   port: 5432
 }
 
+console.log('dataHelpers.js is running')
+
 const pool = new Pool(connectionVars)
 
 pool.on('error', (err, client) => {
